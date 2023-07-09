@@ -1,0 +1,41 @@
+﻿@using Model
+@using Services
+@inject IProductoService ProductoService
+
+<Logo></Logo>
+
+<button @onclick="ToggleView" class="btn btn-primary">
+    Cambiar a vista de @(isCardView ? "Tabla" : "Tarjeta")
+</button>
+
+@if (isCardView)
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var producto in Productos)
+            {
+               <TarjetaProducto producto="producto"></TarjetaProducto>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <ListaProducto Productos="Productos"></ListaProducto>
+}
+
+@code {
+    private bool isCardView = true;
+    public List<Producto> Productos { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Productos = ProductoService.ObtenerProductos().ToList();
+        base.OnInitialized();
+    }
+
+    private void ToggleView()
+    {
+        isCardView = !isCardView;
+    }
+}

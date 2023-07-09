@@ -1,0 +1,61 @@
+﻿@page "/Salvapantalla"
+@using Model
+@using Services;
+@inject IJSRuntime JsRuntime
+@inject IProductoService ProductoService
+
+<h3>Salvapantalla</h3>
+@if (Productos != null && Productos.Count > 0 && currentProduct != null)
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="@currentProduct.PhotoUrl" class="img-fluid" alt="Producto">
+            </div>
+            <div class="col-md-8">
+                <h2>@currentProduct.Nombre</h2>
+                <p>Precio Normal: @currentProduct.Precio</p>
+                <p>Precio Fiesta: @currentProduct.Fiesta</p>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public List<Producto> Productos { get; set; }
+
+    private Producto currentProduct;
+    private int currentIndex = 0;
+
+    protected override void OnInitialized()
+    {
+        Productos = ProductoService.ObtenerProductos().ToList();
+        base.OnInitialized();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await ChangeProduct();
+        }
+    }
+
+    private async Task ChangeProduct()
+    {
+        if (Productos != null && Productos.Count > 0)
+        {
+            currentProduct = Productos[currentIndex];
+            currentIndex = (currentIndex + 1) % Productos.Count;
+            await JsRuntime.InvokeVoidAsync("SetTimeout", DotNetObjectReference.Create(this), 100000);
+        }
+    }
+
+    [JSInvokable("NextProduct")]
+    public async Task NextProduct()
+    {
+        await ChangeProduct();
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,13 @@
+﻿@page "/"
+@namespace CartaCedadd.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    Layout = "_Layout";
+}
+<script>
+    window.SetTimeout = (dotnetHelper, delay) => {
+        setTimeout(dotnetHelper.invokeMethodAsync("NextProduct"), delay);
+    };
+</script>
+
+<component type="typeof(App)" render-mode="ServerPrerendered" />
