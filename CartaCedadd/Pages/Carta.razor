@@ -12,7 +12,7 @@
 {
     <div class="container">
         <div class="row">
-            @foreach (var producto in Productos)
+            @foreach (var producto in Productos.Where(p => p.Enable == true))
             {
                <TarjetaProducto producto="producto"></TarjetaProducto>
             }
